@@ -1,6 +1,8 @@
 import axios from 'axios';
 import React, {useEffect, useState} from 'react'
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 export default function Home() {
     const [users, setUsers] = useState([]);
     useEffect(() => {
@@ -10,7 +12,7 @@ export default function Home() {
     
     const loadUsers = async ()=> {
         try{
-            const result = await axios.get("http://localhost:8080/users");
+            const result = await axios.get(`${API_BASE_URL}/users`);
             console.log(result.data);
             setUsers(result.data);
         }
