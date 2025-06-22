@@ -1,0 +1,17 @@
+.sidebar-link {
+    transition: background 0.2s, font-weight 0.2s;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: #fff !important;
+}
+
+.sidebar-custom {
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04);
+}
+
+.sidebar-user:hover {
+    text-decoration: underline;
+}

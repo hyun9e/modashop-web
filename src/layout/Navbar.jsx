@@ -1,81 +1,109 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import AddUser from '../users/AddUser'
+// import SidebarMenu from 'react-bootstrap-sidebar-menu'
 
-export default function Navbar() {
+function Navbar() {
   return (
     <>
-      <div className="">
-        <nav
-          className="navbar navbar-expand-sm navbar-light bg-light"
-        >
-          <div className="container">
-            <Link className="navbar-brand" to="/">Moda Shop</Link>
-            <button
-              className="navbar-toggler d-lg-none"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#collapsibleNavId"
-              aria-controls="collapsibleNavId"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span className="navbar-toggler-icon"></span>
-            </button>
-            <div className="collapse navbar-collapse" id="collapsibleNavId">
-              <ul className="navbar-nav me-auto mt-2 mt-lg-0">
-                <li className="nav-item">
-                  <a className="nav-link active" href="#" aria-current="page"
-                    >Home
-                    <span className="visually-hidden">(current)</span></a
-                  >
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="#">Link</a>
-                </li>
-                <li className="nav-item dropdown">
-                  <a
-                    className="nav-link dropdown-toggle"
-                    href="#"
-                    id="dropdownId"
-                    data-bs-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                    >Dropdown</a
-                  >
-                  <div
-                    className="dropdown-menu"
-                    aria-labelledby="dropdownId"
-                  >
-                    <a className="dropdown-item" href="#"
-                      >Action 1</a
-                    >
-                    <a className="dropdown-item" href="#"
-                      >Action 2</a
-                    >
-                  </div>
-                </li>
-                <Link className='btn btn-success' to='/adduser'>Add User</Link>
-              </ul>
-              {/* SEARCH */}
-              {/* <form className="d-flex my-2 my-lg-0">
-                <input
-                  className="form-control me-sm-2"
-                  type="text"
-                  placeholder="Search"
-                />
-                <button
-                  className="btn btn-outline-success my-2 my-sm-0"
-                  type="submit"
-                >
-                  Search
-                </button>
-              </form> */}
-            </div>
-          </div>
-        </nav>
-        
-      </div>
+      {/* <SidebarMenu>
+        <SidebarMenu.Header>
+          <SidebarMenu.Brand>
+            <span>MODA</span>
+          </SidebarMenu.Brand>
+          <SidebarMenu.Toggle />
+        </SidebarMenu.Header>
+        <SidebarMenu.Body>
+          <SidebarMenu.Nav>
+            <SidebarMenu.Nav.Link>
+              <SidebarMenu.Nav.Icon>
+                <i className="bi bi-house"></i>
+              </SidebarMenu.Nav.Icon>
+              <SidebarMenu.Nav.Title>
+                Trang chủ
+              </SidebarMenu.Nav.Title>
+            </SidebarMenu.Nav.Link>
+            <SidebarMenu.Nav.Link>
+              <SidebarMenu.Nav.Icon>
+                <i className="bi bi-person-vcard-fill"></i>
+              </SidebarMenu.Nav.Icon>
+              <SidebarMenu.Nav.Title>
+                Quản lý người dùng
+              </SidebarMenu.Nav.Title>
+            </SidebarMenu.Nav.Link>
+            <SidebarMenu.Nav.Link>
+              <SidebarMenu.Nav.Icon>
+                <i className="bi bi-handbag"></i>
+              </SidebarMenu.Nav.Icon>
+              <SidebarMenu.Nav.Title>
+                Quản lý sản phẩm
+              </SidebarMenu.Nav.Title>
+            </SidebarMenu.Nav.Link>
+            <SidebarMenu.Nav.Link>
+              <SidebarMenu.Nav.Icon>
+                <i className="bi bi-grid"></i>
+              </SidebarMenu.Nav.Icon>
+              <SidebarMenu.Nav.Title>
+                Quản lý danh mục
+              </SidebarMenu.Nav.Title>
+            </SidebarMenu.Nav.Link>
+            <SidebarMenu.Nav.Link>
+              <SidebarMenu.Nav.Icon>
+                <i className="bi bi-cart"></i>
+              </SidebarMenu.Nav.Icon>
+              <SidebarMenu.Nav.Title>
+                Quản lý giỏ hàng
+              </SidebarMenu.Nav.Title>
+            </SidebarMenu.Nav.Link>
+            <SidebarMenu.Nav.Link>
+              <SidebarMenu.Nav.Icon>
+                <i className="bi bi-receipt"></i>
+              </SidebarMenu.Nav.Icon>
+              <SidebarMenu.Nav.Title>
+                Quản lý đơn hàng
+              </SidebarMenu.Nav.Title>
+            </SidebarMenu.Nav.Link>
+            <SidebarMenu.Nav.Link>
+              <SidebarMenu.Nav.Icon>
+                <i className="bi bi-reception-4"></i>
+              </SidebarMenu.Nav.Icon>
+              <SidebarMenu.Nav.Title>
+                Thống kê
+              </SidebarMenu.Nav.Title>
+            </SidebarMenu.Nav.Link>
+            <SidebarMenu.Sub>
+              <SidebarMenu.Sub.Toggle>
+                <SidebarMenu.Nav.Icon>
+                  <i className="bi bi-gear"></i>
+                </SidebarMenu.Nav.Icon>
+                <SidebarMenu.Nav.Title>
+                  Cài đặt
+                </SidebarMenu.Nav.Title>
+              </SidebarMenu.Sub.Toggle>
+              <SidebarMenu.Sub.Collapse>
+                <SidebarMenu.Nav>
+                  <SidebarMenu.Nav.Link>
+                    <SidebarMenu.Nav.Icon>
+                      <i className="bi bi-person"></i>
+                    </SidebarMenu.Nav.Icon>
+                    <SidebarMenu.Nav.Title>
+                      Tài khoản
+                    </SidebarMenu.Nav.Title>
+                  </SidebarMenu.Nav.Link>
+                  <SidebarMenu.Nav.Link>
+                    <SidebarMenu.Nav.Icon>
+                      <i className="bi bi-box-arrow-right"></i>
+                    </SidebarMenu.Nav.Icon>
+                    <SidebarMenu.Nav.Title>
+                      Đăng xuất
+                    </SidebarMenu.Nav.Title>
+                  </SidebarMenu.Nav.Link>
+                </SidebarMenu.Nav>
+              </SidebarMenu.Sub.Collapse>
+            </SidebarMenu.Sub>
+          </SidebarMenu.Nav>
+        </SidebarMenu.Body>
+      </SidebarMenu> */}
     </>
   )
 }
+
+export default Navbar
