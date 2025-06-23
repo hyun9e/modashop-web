@@ -155,7 +155,15 @@ function ProductModal({ show, onHide, mode, product, onSave }) {
                         <div className="mb-2"><b>Mô tả:</b> {product?.description}</div>
                         <div className="mb-2"><b>Giá:</b> {product?.price?.toLocaleString()} VND</div>
                         <div className="mb-2"><b>Giảm giá:</b> {product?.discount}%</div>
-                        <div className="mb-2"><b>Hình ảnh:</b><br /><img src={product?.imageUrl} alt={product?.name} style={{ width: '100px', height: '100px', objectFit: 'cover' }} /></div>
+                        <div className="mb-2"><b>Hình ảnh:</b><br />
+                            {product?.imageUrl && (
+                                <img
+                                    src={product.imageUrl.startsWith('http') ? product.imageUrl : `${API_BASE_URL.replace(/\/$/, '')}${product.imageUrl}`}
+                                    alt={product?.name}
+                                    style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+                                />
+                            )}
+                        </div>
                         <div className="mb-2"><b>Danh mục:</b> {product?.category?.name}</div>
                         {Array.isArray(product?.variants) && (
                             <div className="mb-2">
@@ -196,8 +204,37 @@ function ProductModal({ show, onHide, mode, product, onSave }) {
                             <Form.Control type="number" step="1000" name="price" value={form.price} onChange={handleChange} required />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formProductImageUrl">
-                            <Form.Label>Image URL</Form.Label>
-                            <Form.Control type="text" name="imageUrl" value={form.imageUrl} onChange={handleChange} />
+                            <Form.Label>Ảnh sản phẩm</Form.Label>
+                            <div className="mb-2">
+                                {form.imageUrl && (
+                                    <img
+                                        src={form.imageUrl.startsWith('http') ? form.imageUrl : `${API_BASE_URL.replace(/\/$/, '')}${form.imageUrl}`}
+                                        alt="preview"
+                                        style={{ width: 100, height: 100, objectFit: 'cover' }}
+                                    />
+                                )}
+                            </div>
+                            <Form.Control type="file" accept="image/*" onChange={async (e) => {
+                                const file = e.target.files[0];
+                                if (!file) return;
+                                const formData = new FormData();
+                                formData.append('file', file);
+                                try {
+                                    const res = await axios.post(`${API_BASE_URL}/upload`, formData, {
+                                        headers: {
+                                            'ngrok-skip-browser-warning': 'true',
+                                            'Content-Type': 'multipart/form-data',
+                                        },
+                                    });
+                                    if (res.data && typeof res.data === 'string') {
+                                        setForm(prev => ({ ...prev, imageUrl: res.data }));
+                                    } else {
+                                        setError('Upload ảnh thất bại!');
+                                    }
+                                } catch (err) {
+                                    setError('Upload ảnh thất bại!');
+                                }
+                            }} />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formProductCategory">
                             <Form.Label>Danh mục</Form.Label>

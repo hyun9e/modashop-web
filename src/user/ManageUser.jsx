@@ -94,6 +94,12 @@ function ManageUser() {
         fetchUsers();
     }, []);
 
+    // Phân trang client cho user
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+    const totalPages = Math.ceil(users.length / itemsPerPage);
+    const paginatedUsers = users.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
@@ -101,7 +107,12 @@ function ManageUser() {
     return (
         <div className="container">
             <h1 className='text-center mb-5'>QUẢN LÝ NGƯỜI DÙNG</h1>
-            <Button variant='outline-success' className='my-3' onClick={handleAdd}>Thêm</Button>
+            <div className='d-flex justify-content-end my-3'>
+                <Button className='my-3 d-flex align-items-center gap-2' onClick={handleAdd}>
+                    <i className="bi bi-plus-circle"></i>
+                    Thêm
+                </Button>
+            </div>
 
             <UserModal show={modalShow} onHide={handleCloseModal} mode={modalMode} user={selectedUser} onSave={handleSaveUser} />
 
@@ -129,57 +140,79 @@ function ManageUser() {
             </ToastContainer>
 
             {Array.isArray(users) && users.length > 0 ? (
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th className='text-center'>ID</th>
-                            <th className='text-center'>Email</th>
-                            <th className='text-center'>Họ và tên</th>
-                            <th className='text-center'>Địa chỉ</th>
-                            <th className='text-center'>Số điện thoại</th>
-                            <th className='text-center'>Trạng thái</th>
-                            <th className='text-center'>Quyền admin</th>
-                            <th className='text-center'>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {users.map(user => (
-                            <tr key={user.id}>
-                                <td>{user.id}</td>
-                                <td>{user.email}</td>
-                                <td>{user.fullName}</td>
-                                <td>{user.address}</td>
-                                <td>{user.phone}</td>
-                                <td className='text-center'>
-                                    <Button variant="link" className="p-0 border-0" onClick={() => handleConfirmToggle(user)}>
-                                        {user.enabled ? (
-                                            <>
-                                                <i className="bi bi-unlock-fill text-success fs-5"></i>
-                                                <span className="ms-1 text-success">Hoạt động</span>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <i className="bi bi-lock-fill text-danger fs-5"></i>
-                                                <span className="ms-1 text-danger">Đã khóa</span>
-                                            </>
-                                        )}
-                                    </Button>
-                                </td>
-                                <td className='text-center'>{user.admin ? '✔️' : '❌'}</td>
-                                <td>
-                                    <div className='d-flex gap-2 justify-content-center'>
-                                        <Button variant='secondary' onClick={() => handleEdit(user)}>
-                                            <i className="bi bi-pencil-square"></i>
-                                        </Button>
-                                        <Button variant='danger' onClick={() => handleDelete(user)}>
-                                            <i className="bi bi-trash"></i>
-                                        </Button>
-                                    </div>
-                                </td>
+                <>
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th className='text-center'>ID</th>
+                                <th className='text-center'>Email</th>
+                                <th className='text-center'>Họ và tên</th>
+                                <th className='text-center'>Địa chỉ</th>
+                                <th className='text-center'>Số điện thoại</th>
+                                <th className='text-center'>Trạng thái</th>
+                                <th className='text-center'>Quyền admin</th>
+                                <th className='text-center'>Thao tác</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                        </thead>
+                        <tbody>
+                            {paginatedUsers.map(user => (
+                                <tr key={user.id}>
+                                    <td>{user.id}</td>
+                                    <td>{user.email}</td>
+                                    <td>{user.fullName}</td>
+                                    <td>{user.address}</td>
+                                    <td>{user.phone}</td>
+                                    <td className='text-center'>
+                                        <Button variant="link" className="p-0 border-0" onClick={() => handleConfirmToggle(user)}>
+                                            {user.enabled ? (
+                                                <>
+                                                    <i className="bi bi-unlock-fill text-success fs-5"></i>
+                                                    <span className="ms-1 text-success">Hoạt động</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <i className="bi bi-lock-fill text-danger fs-5"></i>
+                                                    <span className="ms-1 text-danger">Đã khóa</span>
+                                                </>
+                                            )}
+                                        </Button>
+                                    </td>
+                                    <td className='text-center'>{user.admin ? '✔️' : '❌'}</td>
+                                    <td>
+                                        <div className='d-flex gap-2 justify-content-center'>
+                                            <Button variant='secondary' onClick={() => handleEdit(user)}>
+                                                <i className="bi bi-pencil-square"></i>
+                                            </Button>
+                                            <Button variant='danger' onClick={() => handleDelete(user)}>
+                                                <i className="bi bi-trash"></i>
+                                            </Button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                    {/* Pagination controls */}
+                    {totalPages > 1 && (
+                        <div className="d-flex justify-content-center my-3">
+                            <nav>
+                                <ul className="pagination mb-0">
+                                    <li className={`page-item${currentPage === 1 ? ' disabled' : ''}`}>
+                                        <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>&laquo;</button>
+                                    </li>
+                                    {Array.from({ length: totalPages }, (_, i) => (
+                                        <li key={i + 1} className={`page-item${currentPage === i + 1 ? ' active' : ''}`}>
+                                            <button className="page-link" onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
+                                        </li>
+                                    ))}
+                                    <li className={`page-item${currentPage === totalPages ? ' disabled' : ''}`}>
+                                        <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>&raquo;</button>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    )}
+                </>
             ) : (
                 <p>Không có dữ liệu người dùng</p>
             )}

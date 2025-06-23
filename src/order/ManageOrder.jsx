@@ -19,6 +19,8 @@ function ManageOrder() {
     const [detailLoading, setDetailLoading] = useState(false);
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [payLoading, setPayLoading] = useState(false);
+    const [showPayModal, setShowPayModal] = useState(false);
+    const [payOrder, setPayOrder] = useState(null);
     const [filterStatus, setFilterStatus] = useState('');
     const [filterPaid, setFilterPaid] = useState('');
     const [searchOrderId, setSearchOrderId] = useState('');
@@ -149,11 +151,15 @@ function ManageOrder() {
         }
     };
 
-    const handleMarkPaid = async (order) => {
-        if (!window.confirm(`Xác nhận đơn hàng #${order.id} đã thanh toán?`)) return;
+    const handleMarkPaid = (order) => {
+        setPayOrder(order);
+        setShowPayModal(true);
+    };
+    const confirmMarkPaid = async () => {
+        if (!payOrder) return;
         setPayLoading(true);
         try {
-            await axios.put(`${API_BASE_URL}/orders/${order.id}/mark-paid`, {}, {
+            await axios.put(`${API_BASE_URL}/orders/${payOrder.id}/mark-paid`, {}, {
                 headers: {
                     'ngrok-skip-browser-warning': 'true',
                     'Accept': 'application/json'
@@ -161,6 +167,8 @@ function ManageOrder() {
             });
             setToast({ show: true, message: 'Đã xác nhận thanh toán!', variant: 'success' });
             fetchOrders();
+            setShowPayModal(false);
+            setPayOrder(null);
         } catch (err) {
             setToast({ show: true, message: 'Xác nhận thanh toán thất bại!', variant: 'danger' });
         } finally {
@@ -277,14 +285,14 @@ function ManageOrder() {
                                 {order.paid ? (
                                     <span className="badge bg-success">Đã thanh toán</span>
                                 ) : (
-                                    <Button size="sm" variant="success" onClick={() => handleMarkPaid(order)} disabled={payLoading}>
-                                        Xác nhận đã thanh toán
+                                    <Button size="sm" variant="outline-success" onClick={() => handleMarkPaid(order)} disabled={payLoading}>
+                                        Xác nhận  thanh toán
                                     </Button>
                                 )}
                             </td>
                             <td>{order.total?.toLocaleString()}₫</td>
                             <td>
-                                <Button size="sm" variant="info" className="me-2" onClick={() => handleView(order)}>Xem</Button>
+                                <Button size="sm" variant="outline-primary" className="me-2" onClick={() => handleView(order)}>Chi tiết</Button>
                                 <Button size="sm" variant="warning" className="me-2" onClick={() => handleCancel(order)}>Hủy đơn</Button>
                                 <Button size="sm" variant="danger" onClick={() => handleDelete(order)}>Xóa</Button>
                             </td>
@@ -383,6 +391,28 @@ function ManageOrder() {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={closeDetailModal}>Đóng</Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={showPayModal} onHide={() => { setShowPayModal(false); setPayOrder(null); }} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Xác nhận thanh toán</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {payOrder && (
+                        <>
+                            <div>Bạn có chắc chắn muốn xác nhận <b>đã thanh toán</b> cho đơn hàng <b>#{payOrder.id}</b>?</div>
+                            <div className="mt-2"><b>Người nhận:</b> {payOrder.recipient || 'Chưa có'} | <b>SĐT:</b> {payOrder.phone || 'Chưa có'}</div>
+                            <div><b>Địa chỉ:</b> {payOrder.address}</div>
+                            <div><b>Tổng tiền:</b> {payOrder.total?.toLocaleString()}₫</div>
+                        </>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => { setShowPayModal(false); setPayOrder(null); }} disabled={payLoading}>Hủy</Button>
+                    <Button variant="success" onClick={confirmMarkPaid} disabled={payLoading}>
+                        {payLoading ? 'Đang xử lý...' : 'Xác nhận'}
+                    </Button>
                 </Modal.Footer>
             </Modal>
 

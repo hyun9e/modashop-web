@@ -96,7 +96,12 @@ function ManageCategory() {
     return (
         <div className="container">
             <h1 className="text-center mb-5">QUẢN LÝ DANH MỤC</h1>
-            <Button variant="outline-success" className="my-3" onClick={handleAdd}>Thêm</Button>
+            <div className="d-flex justify-content-end">
+                <Button className='my-3 d-flex align-items-center gap-2' onClick={handleAdd}>
+                    <i className="bi bi-plus-circle"></i>
+                    Thêm
+                </Button>
+            </div>
             <ToastContainer position="bottom-end" className="p-3">
                 <Toast bg={toast.variant} show={toast.show} onClose={() => setToast({ ...toast, show: false })} delay={2000} autohide>
                     <Toast.Body className="text-white">{toast.message}</Toast.Body>
